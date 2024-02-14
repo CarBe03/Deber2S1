@@ -1,74 +1,96 @@
-<html lang="es">
+<?php
+require 'config/conex.php';
+$db = new Database();
+$con = $db->conectar();
+$sql = $con->prepare("SELECT id, nombre, correo, telefono, fecha_registro, estado_asistencia, comentarios FROM registro_reunion");
+$sql->execute();
+$resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
+?>
 
+<?php
+// Incluye el archivo que contiene la clase de base de datos
+require_once 'config/conex.php';
+
+// Instancia la clase de base de datos
+$database = new Database();
+$pdo = $database->conectar();
+
+// Consulta SQL para seleccionar los registros de personas interesadas en registrarse
+$sql = "SELECT * FROM registro_reunion";
+
+// Prepara y ejecuta la consulta
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+
+// Obtiene todos los resultados como un array asociativo
+$personas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda PepeBotella</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link href="css/estilos.css" rel="stylesheet">
+    <title>Lista de Registro para Reunión</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .green {
+            background-color: green;
+            color: white;
+        }
+        .yellow {
+            background-color: yellow;
+        }
+        .red {
+            background-color: red;
+            color: white;
+        }
+    </style>
 </head>
-
 <body>
-    <!--Barra de navegación-->
-    <header>
-        <div class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container">
-                <a href="#" class="navbar-brand">
-                    <strong>Tienda Online</strong>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarHeader">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link active">Catalogo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Contacto</a>
-                        </li>
-                    </ul>
-                    <a href="carrito.php" class="btn btn-primary">Carrito</a>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!--Contenido-->
-    <main>
-        <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <img src="https://i.ibb.co/XCNWQHD/principal.jpg">
-                        <div class="card-body">
-                            <h5 class="card-title">Cerveza</h5>
-                            <p class="card-text">$2,50</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a href="#" class="btn btn-primary">Detalles</a>
-                                </div>
-                                <a href="#" class="btn btn-success">Agregar</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
-    <!--
-        Marko Robles
-        Códigos de Programación
-        2021
-    -->
+    <h1>Lista de Personas Registradas para la Reunión</h1>
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Estado</th>
+        </tr>
+        <?php foreach ($personas as $persona): ?>
+            <tr>
+                <td><?php echo $persona['nombre']; ?></td>
+                <td><?php echo $persona['correo']; ?></td>
+                <td>
+                    <?php
+                    // Determina el color del botón según el estado (ejemplo)
+                    $estado_asistencia = strtolower($persona['estado_asistencia']);
+                    if ($estado_asistencia == 'asistirá') {
+                        echo '<button class="green">Asistirá</button>';
+                    } elseif ($estado_asistencia == 'pendiente') {
+                        echo '<button class="yellow">Pendiente</button>';
+                    } elseif ($estado_asistencia == 'no asistirá') {
+                        echo '<button class="red">No Asistirá</button>';
+                    } else {
+                        echo 'Desconocido';
+                    }
+                    ?>
+                </td>
+                <td>
+                <a href="eliminar_persona.php?id=<?php echo $persona['id']; ?>"><button>Eliminar</button></a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+    <a href="agregar_persona.php"><button>Agregar Nueva Persona</button></a>
 </body>
-
 </html>
