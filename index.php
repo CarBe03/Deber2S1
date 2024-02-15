@@ -25,7 +25,6 @@ $stmt->execute();
 // Obtiene todos los resultados como un array asociativo
 $personas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -60,11 +59,35 @@ $personas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <h1>Lista de Personas Registradas para la Reunión</h1>
+    <a href="#" id="btnAgregarPersona"><button>Agregar Nueva Persona</button></a>
+    <div id="tablaAgregarPersona" style="display: none;">
+        <h2>Agregar Nueva Persona a la Reunión</h2>
+        <form id="formAgregarPersona" action="#" method="POST">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required><br><br>
+
+            <label for="correo">Correo:</label>
+            <input type="email" id="correo" name="correo" required><br><br>
+
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" name="telefono"><br><br>
+
+            <label for="fecha_registro">Fecha_Registro:</label>
+            <input type="text" id="fecha_registro" name="fecha_registro"><br><br>
+            
+            <label for="estado_asistencia">Estado_Asistencia:</label>
+            <input type="text" id="estado_asistencia" name="estado_asistencia"><br><br>
+
+            <input type="submit" value="Registrar Persona">
+        </form>
+    </div>
+
     <table>
         <tr>
             <th>Nombre</th>
             <th>Correo</th>
             <th>Estado</th>
+            <th>Acciones</th>
         </tr>
         <?php foreach ($personas as $persona): ?>
             <tr>
@@ -86,11 +109,32 @@ $personas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     ?>
                 </td>
                 <td>
-                <a href="eliminar_persona.php?id=<?php echo $persona['id']; ?>"><button>Eliminar</button></a>
+                    <button class="eliminarPersona" data-id="<?php echo $persona['id']; ?>">Eliminar</button>
                 </td>
             </tr>
         <?php endforeach; ?>
     </table>
-    <a href="agregar_persona.php"><button>Agregar Nueva Persona</button></a>
+
+    <script>
+        // Función para mostrar u ocultar la tabla de agregar persona al hacer clic en el botón correspondiente
+        document.getElementById('btnAgregarPersona').addEventListener('click', function() {
+            var tablaAgregarPersona = document.getElementById('tablaAgregarPersona');
+            tablaAgregarPersona.style.display = tablaAgregarPersona.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Función para manejar la eliminación de personas
+        var botonesEliminar = document.querySelectorAll('.eliminarPersona');
+        botonesEliminar.forEach(function(boton) {
+            boton.addEventListener('click', function() {
+                var idPersona = this.getAttribute('data-id');
+                if (confirm('¿Estás seguro de eliminar esta persona?')) {
+                    // Aquí podrías enviar una petición AJAX para eliminar la persona con el ID correspondiente
+                    // Por simplicidad, en este ejemplo solo mostramos un mensaje de confirmación
+                    alert('Persona eliminada con éxito');
+                    // Aquí podrías recargar la lista de personas para reflejar los cambios
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -51,7 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="telefono">Teléfono:</label>
         <input type="text" id="telefono" name="telefono"><br><br>
 
-        <!-- Otros campos de información si es necesario -->
+        <label for="fecha_registro">Fecha_Registro:</label>
+        <input type="text" id="fecha_registro" name="fecha_registro"><br><br>
+
+        <label for="estado_asistencia">Estado_asistencia:</label>
+        <input type="text" id="estado_asistencia" name="estado_asistencia"><br><br>
+
 
         <input type="submit" value="Registrar Persona">
     </form>
